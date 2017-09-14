@@ -1,0 +1,10 @@
+config:
+# リモートアクセスを行うURLの指定
+ app_host: http://demo-cms.zomekiv3.zomeki.jp/
+
+# テスト対象のシステム
+ target: zomeki
+
+# 対象にログインする際のアカウント・パスワード
+ account: zomeki
+ password: zomeki
