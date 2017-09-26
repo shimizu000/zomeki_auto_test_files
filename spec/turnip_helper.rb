@@ -27,7 +27,7 @@ Capybara.configure do |config|
   config.ignore_hidden_elements = true
   config.default_max_wait_time = 30
 
-  setting = YAML.load_file("config.yml")
+  setting = YAML.load_file("/var/www/zomeki_auto_test_files/config.yml")
   config.app_host = setting["config"]["app_host"]
 end
 
@@ -38,4 +38,4 @@ RSpec.configure do |config|
   end
 end
 
-Dir.glob("spec/**/*steps.rb") { |f| load f, true }
+Dir.glob("/var/www/zomeki_auto_test_files/spec/**/*steps.rb") { |f| load f, true }
