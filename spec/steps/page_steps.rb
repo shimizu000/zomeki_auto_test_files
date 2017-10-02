@@ -47,7 +47,6 @@ steps_for :page do
 
     ssname = 'public/screenshot/' + name + '.png'
     page.save_screenshot ssname, full: true, js: true
-    Gnawrnip.photographer.take_shot
   end
 
   #ページ読み込み待ち
@@ -87,7 +86,6 @@ steps_for :page do
     if link_button == 'リンクチェック' || link_button == 'アクセシビリティチェック'
       ssname = 'public/screenshot/' + link_button + '.png'
       page.save_screenshot ssname, full: true, js: true
-      Gnawrnip.photographer.take_shot
       page.should have_button('下書き保存')
       click_on '下書き保存'
     end
@@ -114,7 +112,6 @@ steps_for :page do
     if link_button == 'リンクチェック' || link_button == 'アクセシビリティチェック'
       ssname = 'public/screenshot/' + link_button + '.png'
       page.save_screenshot ssname, full: true, js: true
-      Gnawrnip.photographer.take_shot
       page.should have_button('下書き保存')
       click_on '下書き保存'
     end

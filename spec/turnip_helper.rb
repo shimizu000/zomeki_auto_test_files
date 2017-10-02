@@ -34,8 +34,8 @@ end
 RSpec.configure do |config|
   config.before do |example|
     puts
-    puts ':' + example.metadata[:example_group][:description]
+    puts '::' + example.metadata[:example_group][:description]
   end
 end
 
-Dir.glob("/var/www/zomeki_auto_test_files/spec/**/*steps.rb") { |f| load f, true }
+Dir.glob("/var/www/zomeki_auto_test_files/spec/steps/*steps.rb") { |f| load f, true }
