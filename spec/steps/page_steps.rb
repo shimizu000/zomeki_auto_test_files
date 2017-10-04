@@ -78,6 +78,8 @@ steps_for :page do
       page.find('.ui-datepicker-next', visible: false).click
     elsif link_button == '前'
       page.find('.ui-datepicker-prev', visible: false).click
+    elsif link_button == 'ログアウト'
+      page.find('.logout', visible: false).click
     else
       page.should have_button(link_button)
       click_on link_button
@@ -150,7 +152,7 @@ steps_for :page do
 
     sleep 1
   end
-###
+
   #上のstepに加えて'text'も指定する場合
   step '":path_type"":path_text"の":content_name"をクリック' do |path_type, path_text, content_name|
     puts '"' + path_type + '""' + path_text + '"の"' + content_name + '"をクリック'
@@ -173,9 +175,9 @@ steps_for :page do
 
     sleep 1
   end
-#####
-  step '":path_type"":path_text"の上から":n"番目の":content_name"をクリック' do |path_type, path_text, n, link_button|
-    puts '"' + path_type + '""' + path_text + '"の上から"' + n + '"番目の"' + link_button + '"をクリック'
+
+  step '":path_type"":path_text"の上から":n"番目の":content_name"をクリック' do |path_type, path_text, n, content_name|
+    puts '"' + path_type + '""' + path_text + '"の上から"' + n + '"番目の"' + content_name + '"をクリック'
 
     if path_type == 'class' || path_type == 'クラス'
       path_name = '.' + path_text
@@ -185,12 +187,12 @@ steps_for :page do
       path_name = path_text
     end
 
-    if link_button == 'リンク' || link_button == ''
-      page.find(path_name).all(:link_or_button)[n.to_i-1].click
-    elsif link_button == '拡張検索' && (current_path.start_with?('/_system/gp_article') || current_path.start_with?('/_admin/gp_article')) && current_path.end_with?('/docs')
+    if content_name == 'リンク' || content_name == ''
+      page.find(path_name).all(:content_name)[n.to_i-1].click
+    elsif content_name == '拡張検索' && (current_path.start_with?('/_system/gp_article') || current_path.start_with?('/_admin/gp_article')) && current_path.end_with?('/docs')
       page.find(:xpath, '//*[@id="toggleSearch"]').click
     else
-      page.find(path_name).all(:link_or_button, link_button)[n.to_i-1].click
+      page.find(path_name).all(:content_name, content_name)[n.to_i-1].click
     end
 
     sleep 1
@@ -320,7 +322,7 @@ steps_for :page do
     while high < count
       text = page.all('tr')[high].all('td')[wide].text
       if text == content
-        name = page.all('tr')[high].all('td')[mark].text #unless page.all('tr')[high].include?('colspan')
+        name = page.all('tr')[high].all('td')[mark].text
         if link_button == 'リンク' || link_button == ''
           page.all('tr')[high].all('td')[mark].find(:link_or_button).click
         else
@@ -333,7 +335,7 @@ steps_for :page do
 
     sleep 1
   end
-#####
+
   step 'indexテーブルの左から":x"列目が":content"のときヘッダが":th_content"の":link_button"をクリック' do |x, content, th_content, link_button|
     puts 'indexテーブルの左から"' + x + '"列目が"' + content + '"のときヘッダが"' + th_content + '"の"' + link_button + '"をクリック'
 
@@ -364,7 +366,7 @@ steps_for :page do
 
     sleep 1
   end
-#####
+
   step 'indexテーブルのヘッダが":content"のときの":n"段目の":link_button"をクリック' do |content, n, link_button|
     puts 'indexテーブルのヘッダが"' + content + '"のときの"' + n + '"段目の"' + link_button + '"をクリック'
 
@@ -401,7 +403,7 @@ steps_for :page do
 
     sleep 1
   end
-#####
+
   step 'indexテーブルのth":th1"が":td1"のときヘッダ名":th"の":link_button"をクリック' do |th1, td1, th, link_button|
     td1 = $gp_article_num if td1 == '$gp_article_num'
     td1 = $gp_article_url if td1 == '$gp_article_url'
@@ -505,6 +507,7 @@ steps_for :page do
     count_th2 = 0
     count_td = 1
     breaker = 0
+
     if (current_path.include?('/_system/gp_article/') || current_path.include?('/_admin/gp_article/')) == true && current_path.include?('/content_settings') == false
       count_all = page.find('.count').text.to_i
       count_all = count_all / 30 + 1
@@ -567,7 +570,7 @@ steps_for :page do
     end
     sleep 1
   end
-#####
+
   step 'indexテーブルのth":th1"が":td1"かつth":th2"が":td2"かつth":th3"が":td3"のときヘッダ名":th"の":link_button"をクリック' do |th1, td1, th2, td2, th3, td3, th, link_button|
     td1 = $gp_article_num if td1 == '$gp_article_num'
     td1 = $gp_article_url if td1 == '$gp_article_url'
@@ -727,7 +730,7 @@ steps_for :page do
       select select_command, from: path_text
     end
   end
-#####
+
   step '":path_type"":path_text"の":select_box"内の上から":n"番目のセレクトボックスで":select_command"を選択' do |path_type, path_text, select_box, n, select_command|
     puts '"' + path_type + '""' + path_text + '"の"' + select_box + '"内の上から"' + n + '"番目のセレクトボックスで"' + select_command + '"を選択'
 
@@ -802,7 +805,7 @@ steps_for :page do
       break if td_select == 1
     end
   end
-#####
+
   step '":path_type"":path_text"の上から":n"番目の":select_box"のセレクトボックスで":select_command"を選択' do |path_type, path_text, n, select_box, select_command|
     puts '"' + path_type + '""' + path_text + '"の上から"' + n + '"番目の"' + select_box + '"のセレクトボックスで"' + select_command + '"を選択'
 
@@ -824,7 +827,6 @@ steps_for :page do
         if text == select_box
           count_box += 1
           if count_box == n.to_i
-            count_th += 1 if select_box == '状態' && (current_path.start_with?('/_system/gp_article') || current_path.start_with?('/_admin/gp_article')) && current_path.end_with?('/docs')
             if select_command.empty?
               page.find(path_name).all('td')[count_th].find('select').select_option
               break
@@ -898,7 +900,7 @@ steps_for :page do
                     break
                   end
                 end
-              elsif text == '公開先' && (current_path.start_with?('/_system/gp_article') || current_path.start_with?('/_admin/gp_article')) && current_path.end_with?('/docs')
+              elsif text == '公開先' && current_path.start_with?('/_admin/gp_article') && current_path.end_with?('/docs')
                 if select_command.empty?
                   page.find(:xpath, '//*[@id="criteria_public_destination"]').select(select_command).all('option')[0].select_option
                   break
@@ -1051,7 +1053,7 @@ steps_for :page do
       page.find(path_name).set(item_path)
     end
   end
-###
+
   #[ユーザー]-[インポート]の'グループ'・'ユーザー', [ディレクトリ]-[ファイル管理]の'アップロード'等
   #ヘッダ名がファイルアップロードのlabelでない場合もヘッダ名で指定できるようにする
   step '":path_type"":path_text"の":input_value"で":item_path"ファイルを選択' do |path_type, path_text, input_value, item_path|
@@ -1080,7 +1082,6 @@ steps_for :page do
     end
   end
 
-#####
   step '":input_value"で":item_path"ファイルを選択' do |input_value, item_path|
     puts '"' + input_value + '"で"' + item_path + '"ファイルを選択'
 
@@ -1105,7 +1106,7 @@ steps_for :page do
 
     choose item_target if item_target.empth?
   end
-#####
+
   step '":path_type"":path"のラジオボタンの":item_target"を選択' do |path_type, path_text, item_target|
     puts '"' + path_type + '""' + path_text + '"のラジオボタンの"' + item_target + '"を選択'
 
@@ -1126,7 +1127,20 @@ steps_for :page do
 
     fill_in path_text, with: form_data
   end
-#####
+
+  #'path_type'には'ID'・'label'・'name'・'xpath'・'cssパス'のいずれかを入力する
+  step '":path_type"":path_text"に":form_data"を入力' do |path_type, path_text, form_data|
+    puts '"' + path_type + '""' + path_text + '"に"' + form_data + '"を入力'
+
+    if path_type == 'xpath' || path_type == 'Xpath'
+      page.find(:xpath, path_text).set(form_data)
+    elsif path_type == 'css' || path_type == 'cssパス' || path_type == 'csspath'
+      page.find(path_text).set(form_data)
+    else
+      fill_in path_text, with: form_data
+    end
+  end
+
   step '":path_type"":path_text"の上から":n"番目の":form"に":form_data"を入力' do |path_type, path_text, n, form, form_data|
     puts '"' + path_type + '""' + path_text + '"の上から"' + n + '"番目の"' + form + '"に"' + form_data + '"を入力'
 
@@ -1201,7 +1215,7 @@ steps_for :page do
       count_tr += 1
     end
   end
-#####
+
   step 'タブ":tab_text"の上から":n"番目の":form"に":form_data"を入力' do |tab_text, n, form, form_data|
     puts 'タブ"' + tab_text + '"の上から"' + n + '"番目の"' + form + '"に"' + form_data + '"を入力'
 
@@ -1263,19 +1277,6 @@ steps_for :page do
     end
   end
 
-  #'path_type'には'ID'・'label'・'name'・'xpath'・'cssパス'のいずれかを入力する
-  step '":path_type"":path_text"に":form_data"を入力' do |path_type, path_text, form_data|
-    puts '"' + path_type + '""' + path_text + '"に"' + form_data + '"を入力'
-
-    if path_type == 'xpath' || path_type == 'Xpath'
-      page.find(:xpath, path_text).set(form_data)
-    elsif path_type == 'css' || path_type == 'cssパス' || path_type == 'csspath'
-      page.find(path_text).set(form_data)
-    else
-      fill_in path_text, with: form_data
-    end
-  end
-###
   #'target'には指定したいチェックボックスの'label'の'text'を, 'on_off'には'入れる'・'はずす'のいずれかを入力する
   step '":target"のチェックを":on_off"' do |target, on_off|
     puts '"' + target + '"のチェックを"' + on_off + '"'
@@ -1300,7 +1301,7 @@ steps_for :page do
       end
     end
   end
-#####
+
   step '":path_type"":path_text"で":target"のチェックを":on_off"' do |path_type, path_text, target, on_off|
     puts '"' + path_type + '""' + path_text + '"で"' + target + '"のチェックを"' + on_off + '"'
 
@@ -1331,7 +1332,7 @@ steps_for :page do
       end
     end
   end
-###
+
   #チェックボックスを'xpath'・'cssパス'で指定
   step '":path_type"":path_text"のチェックを":on_off"' do |path_type, path_text, on_off|
     puts '"' + path_type + '""' + path_text + '"のチェックを"' + on_off + '"'
@@ -1461,9 +1462,9 @@ steps_for :page do
         end
       end
     elsif text == 'バージョン情報'
-      if yes_no == 'いる'
+      if yes_no == 'ある'
         expect(page.find(".version").text).to have_content(/\A.*Ver\.\d+\.\d+\.\d+\sbuild-\d+.*\Z/)
-      elsif yes_no == 'いない'
+      elsif yes_no == 'ない'
         expect(page.find(".version").text).to_not have_content(/\A.*Ver\.\d+\.\d+\.\d+\sbuild-\d+.*\Z/)
       end
     else
@@ -1721,7 +1722,7 @@ steps_for :page do
       expect(page.find('.index')[number].all('tr')[high].all('td')[wide].text).to_not eq(td)
     end
   end
-#####
+
   step '上から":n"番目のindexテーブルのヘッダ名":th"にデータ":td"が":yes_no"ことを確認' do |n, th, td, yes_no|
     puts '上から"' + n + '"番目のindexテーブルのヘッダ名"' + th + '"にデータ"' + td + '"が"' + yes_no + '"ことを確認'
 
@@ -1748,7 +1749,7 @@ steps_for :page do
       expect(page.all('.index')[n.to_i-1].all('tr')[count_td].all('td')[count_th].text).to_not eq(td)
     end
   end
-#####
+
   step 'indexテーブルのヘッダ名":th"にデータ":td"が":yes_no"ことを確認' do |th, td, yes_no|
     td = $gp_article_num if td == '$gp_article_num'
     td = $gp_article_url if td == '$gp_article_url'
@@ -1778,7 +1779,7 @@ steps_for :page do
     end
 
     while count_gparticle <= count_all
-      puts ('page' + count_gparticle.to_s)if (current_path.include?('/_system/gp_article/') || current_path.include?('/_admin/gp_article/'))
+      puts ('page' + count_gparticle.to_s) if (current_path.include?('/_system/gp_article/') || current_path.include?('/_admin/gp_article/'))
       count_td = 1
       high = page.find('.index').all('tr').size - 1
       while count_td < high
@@ -1803,7 +1804,7 @@ steps_for :page do
       expect(page.find('.index').all('tr')[count_td].all('td')[count_th].text).to_not eq(td)
     end
   end
-#####
+
   step 'indexテーブルのth":th1"が":td1"のときヘッダ名":th"にデータ":td"が":yes_no"ことを確認' do |th1, td1, th, td, yes_no|
     td1 = $gp_article_num if td1 == '$gp_article_num'
     td1 = $gp_article_url if td1 == '$gp_article_url'
@@ -1868,12 +1869,14 @@ steps_for :page do
     end
 
     if yes_no == 'ある'
+      expect(page.find('.index').all('tr')[count_td].all('td')[count_th1].text).to eq(td1)
       expect(page.find('.index').all('tr')[count_td].all('td')[count_th].text).to eq(td)
     elsif yes_no == 'ない'
+      expect(page.find('.index').all('tr')[count_td].all('td')[count_th1].text).to_not eq(td1)
       expect(page.find('.index').all('tr')[count_td].all('td')[count_th].text).to_not eq(td)
     end
   end
-#####
+
   step 'indexテーブルのth":th1"が":td1"かつth":th2"が":td2"のときヘッダ名":th"にデータ":td"が":yes_no"ことを確認' do |th1, td1, th2, td2, th, td, yes_no|
     td1 = $gp_article_num if td1 == '$gp_article_num'
     td1 = $gp_article_url if td1 == '$gp_article_url'
@@ -1953,12 +1956,16 @@ steps_for :page do
     end
 
     if yes_no == 'ある'
+      expect(page.find('.index').all('tr')[count_td].all('td')[count_th1].text).to eq(td1)
+      expect(page.find('.index').all('tr')[count_td].all('td')[count_th2].text).to eq(td2)
       expect(page.find('.index').all('tr')[count_td].all('td')[count_th].text).to eq(td)
     elsif yes_no == 'ない'
+      expect(page.find('.index').all('tr')[count_td].all('td')[count_th1].text).to_not eq(td1)
+      expect(page.find('.index').all('tr')[count_td].all('td')[count_th2].text).to_not eq(td2)
       expect(page.find('.index').all('tr')[count_td].all('td')[count_th].text).to_not eq(td)
     end
   end
-#####
+
   step 'indexテーブルのth":th1"が":td1"かつth":th2"が":td2"かつth":th3"が":td3"のときヘッダ名":th"にデータ":td"が":yes_no"ことを確認' do |th1, td1, th2, td2, th3, td3, th, td, yes_no|
     td1 = $gp_article_num if td1 == '$gp_article_num'
     td1 = $gp_article_url if td1 == '$gp_article_url'
@@ -2055,12 +2062,18 @@ steps_for :page do
     end
 
     if yes_no == 'ある'
+      expect(page.find('.index').all('tr')[count_td].all('td')[count_th1].text).to eq(td1)
+      expect(page.find('.index').all('tr')[count_td].all('td')[count_th2].text).to eq(td2)
+      expect(page.find('.index').all('tr')[count_td].all('td')[count_th3].text).to eq(td3)
       expect(page.find('.index').all('tr')[count_td].all('td')[count_th].text).to eq(td)
     elsif yes_no == 'ない'
+      expect(page.find('.index').all('tr')[count_td].all('td')[count_th1].text).to_not eq(td1)
+      expect(page.find('.index').all('tr')[count_td].all('td')[count_th2].text).to_not eq(td2)
+      expect(page.find('.index').all('tr')[count_td].all('td')[count_th3].text).to_not eq(td3)
       expect(page.find('.index').all('tr')[count_td].all('td')[count_th].text).to_not eq(td)
     end
   end
-###
+
   #'class'が'show'のテーブルのデータで, ヘッダと入力内容が対応しているかを確認
   #'yes_no'には'ある'・'ない'のいずれかを入力する
   step 'ヘッダ名が":th"のデータが":td"で":yes_no"ことを確認' do |th, td, yes_no|
@@ -2096,7 +2109,7 @@ steps_for :page do
       expect(page.all('tr')[count].all('td')[num].text).to_not eq(td)
     end
   end
-#####
+
   step 'ヘッダ名":th"が":yes_no"ことを確認' do |th, yes_no|
     puts 'ヘッダ名"' + th + '"が"' + yes_no + '"ことを確認'
 
