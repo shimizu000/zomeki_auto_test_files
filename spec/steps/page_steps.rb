@@ -192,12 +192,12 @@ steps_for :page do
     elsif content_name == '拡張検索' && (current_path.start_with?('/_system/gp_article') || current_path.start_with?('/_admin/gp_article')) && current_path.end_with?('/docs')
       page.find(:xpath, '//*[@id="toggleSearch"]').click
     else
-      page.find(path_name).all(:content_name, content_name)[n.to_i-1].click
+      page.find(path_name).all(:link_or_button, content_name)[n.to_i-1].click
     end
 
     sleep 1
   end
-#####
+
   #td内にあるリンクやボタンをクリックする場合
   step '":path_type"":path_text"のヘッダ名":content"にある上から":n"番目の":link_button"をクリック' do |path_type, path_text, content, n, link_button|
     puts '"' + path_type + '""' + path_text + '"のヘッダ名"' + content + '"にある上から"' + n + '"番目の"' + link_button + '"をクリック'
@@ -478,7 +478,7 @@ steps_for :page do
     end
     sleep 1
   end
-#####
+
   step 'indexテーブルのth":th1"が":td1"かつth":th2"が":td2"のときヘッダ名":th"の":link_button"をクリック' do |th1, td1, th2, td2, th, link_button|
     td1 = $gp_article_num if td1 == '$gp_article_num'
     td1 = $gp_article_url if td1 == '$gp_article_url'
